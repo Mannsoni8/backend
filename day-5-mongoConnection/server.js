@@ -1,4 +1,5 @@
-const express = require(express);
+const app = require("./src/app");
 
-let app = express();
-app.use(express.json());
+app.listen(3000, () => {
+  console.log("server is runing on 3000");
+});
