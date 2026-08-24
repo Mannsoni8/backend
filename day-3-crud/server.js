@@ -29,7 +29,10 @@ app.delete("/delete/:id", (req, res) => {
 
 //update
 app.put("/update/:id", (req, res) => {
-  res.send("Update hone wala h");
+  let { id } = req.params;
+  let { name } = req.body;
+  let userData = users.map((val) => (val.id === id ? { ...val, name } : val));
+  res.send(userData);
 });
 
 app.listen(port, () => {
