@@ -16,6 +16,9 @@ const storage = multer.diskStorage({
   },
 });
 
+// for server
+const storageForServer = multer.memoryStorage();
+
 const upload = multer({ storage });
 
 module.exports = upload;
