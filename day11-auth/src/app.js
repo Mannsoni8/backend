@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 await connectDB();
 
-app.get("/api", (req, res) => {
+app.get("/", (req, res) => {
   res.status(200).json({
     message: "All good",
   });

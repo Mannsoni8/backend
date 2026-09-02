@@ -48,3 +48,18 @@ export const registerUserController = async (req, res) => {
     });
   }
 };
+
+export const loginUserController = async (req,res)=>{
+
+  // is more appropriate for a protected route, not for the initial login.
+  const authHeader = req.headers.authorization
+
+  console.log(authHeader)
+
+  const data = jwt.decode(authHeader)
+  console.log(data)
+
+  const user = await userModel.findById(data.id)
+
+  console.log(user)
+}
