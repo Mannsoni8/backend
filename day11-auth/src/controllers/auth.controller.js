@@ -49,17 +49,41 @@ export const registerUserController = async (req, res) => {
   }
 };
 
-export const loginUserController = async (req,res)=>{
-
+export const loginUserController = async (req, res) => {
   // is more appropriate for a protected route, not for the initial login.
-  const authHeader = req.headers.authorization
+  // const authHeader = req.headers.authorization
 
-  console.log(authHeader)
+  // console.log(authHeader)
 
-  const data = jwt.decode(authHeader)
-  console.log(data)
+  // const data = jwt.decode(authHeader)
+  // console.log(data)
 
-  const user = await userModel.findById(data.id)
+  // const user = await userModel.findById(data.id)
 
-  console.log(user)
-}
+  // console.log(user)
+
+  const { email, password } = req.body;
+
+  const user = await userModel.findOne({ email });
+
+  if (!user) {
+    return res.status(401).json({
+      message: "Invalid email or password",
+    });
+  }
+
+  const isPasswordCorrect = await user.comparePassword(password);
+
+  if (!isPasswordCorrect) {
+    return res.status(401).json({
+      message: "Invalid email or password",
+    });
+  }
+
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+
+  return res.status(200).json({
+    message: "Login successful",
+    token,
+  });
+};
