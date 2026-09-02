@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import userModel from "../model/user.model.js";
+import bcrypt from 'bcryptjs'
 
 export const registerUserController = async (req, res) => {
   try {
@@ -25,7 +26,7 @@ export const registerUserController = async (req, res) => {
     const user = await userModel.create({
       email,
       name,
-      password,
+      password:await bcrypt.hash(password,10),
     });
 
     // Create JWT
