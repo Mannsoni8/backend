@@ -12,7 +12,7 @@ export const registerUserController = async (req, res) => {
     });
   }
 
-  const isExist = await userModel.find({ email });
+  const isExist = await userModel.findOne({ email });
 
   if (isExist) {
     return res.status(400).json({
