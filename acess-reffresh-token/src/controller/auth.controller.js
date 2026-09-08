@@ -48,7 +48,6 @@ export const userRegisterController = async (req, res) => {
 
     return res.status(201).json({
       message: "User registered successfully",
-      accessToken,
       refreshToken,
       user: {
         id: user._id,
@@ -70,8 +69,7 @@ export const getUserController = async (req, res) => {
     const userId = req.userId;
 
     const user = await userModel
-      .findById(userId)
-      .select("-password -refreshToken");
+      .findById(userId);
 
     if (!user) {
       return res.status(404).json({
