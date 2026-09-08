@@ -1,5 +1,5 @@
 import userModel from "../model/auth.model.js";
-import { verifyRefreshToken } from "../utils/auth.js";
+import { generateToken, verifyRefreshToken } from "../utils/auth.js";
 
 export const refreshTokenController = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
@@ -42,7 +42,7 @@ export const refreshTokenController = async (req, res) => {
     // Send new refresh token as cookie
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
