@@ -1,5 +1,6 @@
 import userModel from "../model/auth.model.js";
 import bcrypt from "bcryptjs";
+import { generateToken } from "../utils/auth.js";
 
 export const userRegisterController = async (req, res) => {
   try {
@@ -21,8 +22,8 @@ export const userRegisterController = async (req, res) => {
       });
     }
 
-    // Hash the user's actual password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 12);
 
     // Create user
     const user = await userModel.create({
@@ -31,8 +32,15 @@ export const userRegisterController = async (req, res) => {
       password: hashedPassword
     });
 
+    // Generate tokens
+    const { accessToken, refreshToken } = generateToken({
+      userId: user._id
+    });
+
     return res.status(201).json({
       message: "User registered successfully",
+      accessToken,
+      refreshToken,
       user: {
         id: user._id,
         name: user.name,
