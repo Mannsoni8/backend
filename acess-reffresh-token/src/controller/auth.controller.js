@@ -83,7 +83,7 @@ export const getUserController = async (req, res) => {
     });
   } catch (error) {
     return res.status(401).json({
-      message: "Invalid or expired access token",
+      message: `Invalid or expired access token ${error}`,
     });
   }
 };
