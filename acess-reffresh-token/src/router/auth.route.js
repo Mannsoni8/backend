@@ -3,6 +3,7 @@ import {
   getUserController,
   userRegisterController,
 } from "../controller/auth.controller";
+import { refreshTokenController } from "../controller/token.controller";
 
 const router = Router();
 
