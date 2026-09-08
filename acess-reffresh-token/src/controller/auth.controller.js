@@ -1,6 +1,6 @@
 import userModel from "../model/auth.model.js";
 import bcrypt from "bcryptjs";
-import { generateToken } from "../utils/auth.js";
+import { generateToken, verifyAcessToken } from "../utils/auth.js";
 
 export const userRegisterController = async (req, res) => {
   try {
@@ -65,27 +65,25 @@ export const userRegisterController = async (req, res) => {
 };
 
 export const getUserController = async (req, res) => {
+  const accessToekn = req.headers.authorization?.split(" ")[1];
+
   try {
-    const userId = req.userId;
+    const decoded = verifyAcessToken(accessToken);
 
-    const user = await userModel
-      .findById(userId);
-
-    if (!user) {
-      return res.status(404).json({
-        message: "User not found",
-      });
-    }
+    const user = await userModel.findById(decoded.id);
 
     return res.status(200).json({
-      message: "User fetched successfully",
-      user,
+      message: "User is fetch",
+      data: {
+        user: {
+          name: user.name,
+          email: user.email,
+        },
+      },
     });
   } catch (error) {
-    console.error(error);
-
-    return res.status(500).json({
-      message: "Internal server error",
+    return res.status(401).json({
+      message: "Invalid or expired access token",
     });
   }
 };
