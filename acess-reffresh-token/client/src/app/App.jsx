@@ -1,10 +1,9 @@
+import { RouterProvider } from "react-router";
+import router from "../../../server/src/router/auth.route";
 import "./App.css";
+
 const App = () => {
-  return (
-    <div>
-      <h1>App</h1>
-    </div>
-  );
+  return <RouterProvider router={router} />;
 };
 
 export default App;
