@@ -3,12 +3,11 @@ import { Link, useNavigate } from "react-router";
 import useApi from "../../../shared/useApi";
 import { useAuthContext } from "../context/AuthContext";
 
-const Register = () => {
+const Login = () => {
   const api = useApi();
   const { setAccessToken, setUser } = useAuthContext();
   const navigate = useNavigate();
 
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -20,8 +19,7 @@ const Register = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await api.post("/auth/register", {
-        name,
+      const response = await api.post("/auth/login", {
         email,
         password,
       });
@@ -32,9 +30,9 @@ const Register = () => {
         navigate("/profile");
       }
     } catch (err) {
-      console.error("Registration failed:", err);
+      console.error("Login failed:", err);
       setError(
-        err.response?.data?.message || "Registration failed. Please try again."
+        err.response?.data?.message || "Login failed. Please check your credentials."
       );
     } finally {
       setIsSubmitting(false);
@@ -45,7 +43,7 @@ const Register = () => {
     <main className="flex items-center justify-center min-h-screen bg-gray-50 p-4">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
         <h1 className="text-2xl font-bold text-center mb-6 text-gray-800">
-          Create Account
+          Sign In
         </h1>
 
         {error && (
@@ -55,22 +53,6 @@ const Register = () => {
         )}
 
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Full Name
-            </label>
-            <input
-              type="text"
-              required
-              minLength={3}
-              maxLength={20}
-              className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="John Doe"
-            />
-          </div>
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Email Address
@@ -92,7 +74,6 @@ const Register = () => {
             <input
               type="password"
               required
-              minLength={6}
               className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -105,14 +86,14 @@ const Register = () => {
             disabled={isSubmitting}
             className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded transition duration-200 disabled:opacity-50"
           >
-            {isSubmitting ? "Registering..." : "Register"}
+            {isSubmitting ? "Signing In..." : "Sign In"}
           </button>
         </form>
 
         <p className="mt-4 text-center text-sm text-gray-600">
-          Already have an account?{" "}
-          <Link to="/login" className="text-blue-600 hover:underline">
-            Sign In here
+          Don&apos;t have an account?{" "}
+          <Link to="/register" className="text-blue-600 hover:underline">
+            Register here
           </Link>
         </p>
       </div>
@@ -120,4 +101,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;
