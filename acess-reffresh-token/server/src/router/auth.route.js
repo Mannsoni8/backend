@@ -2,8 +2,8 @@ import { Router } from "express";
 import {
   getUserController,
   userRegisterController,
-} from "../controller/auth.controller";
-import { refreshTokenController } from "../controller/token.controller";
+} from "../controller/auth.controller.js";
+import { refreshTokenController } from "../controller/token.controller.js";
 
 const router = Router();
 

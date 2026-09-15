@@ -17,7 +17,7 @@ export function verifyAcessToken(token) {
   return decoded;
 }
 
-export function verifyRefreshToekn(token) {
+export function verifyRefreshToken(token) {
   const decoded = jwt.verify(token, config.REFRESS_TOKEN_SECRET);
   return decoded;
 }
