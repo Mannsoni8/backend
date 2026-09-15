@@ -3,6 +3,6 @@ import { getUrlShortcodeController } from "../controllers/url.controller.js";
 
 const router = express.Router();
 
-router.get("/", getUrlShortcodeController);
+router.post("/", getUrlShortcodeController);
 
 export default router;
