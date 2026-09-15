@@ -23,7 +23,7 @@ export const useAuthContext = () => {
   const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error("useAuthContext must be");
+    throw new Error("useAuthContext must be define");
   }
   return context;
 };
