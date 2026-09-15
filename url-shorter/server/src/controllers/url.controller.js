@@ -49,3 +49,17 @@ export const getUrl = async (req, res) => {
     },
   });
 };
+
+export const codeUrlController = async(req,res)=>{
+    const {code}= req.params
+
+    const url = await urlModel.findOne({
+        shortCode:code
+    })
+   if (!url) {
+    return res.status(400).json({
+      error: "Please enter a URL",
+    });
+  }
+  res.redirect(302,url.originalUrl)
+}
