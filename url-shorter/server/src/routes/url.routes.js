@@ -1,6 +1,8 @@
-import express from "express"
+import express from "express";
+import { getUrlShortcodeController } from "../controllers/url.controller";
 
+const router = express.Router();
 
-const router = express.Router()
+router.get("/", getUrlShortcodeController);
 
-export default router
+export default router;

@@ -22,4 +22,19 @@ export const getUrlShortcodeController = async (req, res) => {
   if (url.length > 2048) {
     return res.status(400).json({ error: "URL is to long" });
   }
+
+  const code = generateCode();
+
+  const newUrl = await urlModel.create({
+    originalUrl: url,
+    shortCode: code,
+  });
+
+  return res.status(201).json({
+    message: "URL shortened successfully",
+    data: {
+      originalUrl: newUrl.originalUrl,
+      shortCode: newUrl.shortCode,
+    },
+  });
 };
