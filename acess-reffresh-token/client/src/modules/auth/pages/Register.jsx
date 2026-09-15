@@ -1,8 +1,8 @@
 import { useState } from "react";
-import useApi from "../../../shared/useApi";
+// import useApi from "../../../shared/useApi";
 
 const Register = () => {
-  const api = useApi();
+  // const api = useApi();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

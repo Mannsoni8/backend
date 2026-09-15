@@ -13,18 +13,17 @@ export const AuthProvider = ({ children }) => {
         setUser,
         accessToken,
         setAccessToken,
-      }}
-    >
+      }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
 export const useAuthContext = () => {
- const context = useContext(AuthContext)
+  const context = useContext(AuthContext);
 
- if(!context){
-    throw new Error("useAuthContext must be")
- }
- return context
+  if (!context) {
+    throw new Error("useAuthContext must be");
+  }
+  return context;
 };
