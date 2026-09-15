@@ -38,3 +38,14 @@ export const getUrlShortcodeController = async (req, res) => {
     },
   });
 };
+
+export const getUrl = async (req, res) => {
+  const urls = await urlModel.find();
+
+  return res.status(200).json({
+    message: "URL fetched successfully",
+    data: {
+      urls,
+    },
+  });
+};
