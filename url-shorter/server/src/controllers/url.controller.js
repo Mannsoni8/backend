@@ -68,4 +68,10 @@ export const codeUrlController = async (req, res) => {
     }
 
     return res.redirect(302, url.originalUrl);
+
+    await urlModel.findOneAndUpdate({
+        shortCode: code,
+    },{
+        $inc:{clicks:1}
+    })
 };
