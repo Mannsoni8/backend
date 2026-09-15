@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useAuthContext } from "../modules/auth/context/useAuthContext";
+import { useAuthContext } from "../modules/auth/context/AuthProvider";
 
 export default function useApi() {
   const authContext = useAuthContext();
