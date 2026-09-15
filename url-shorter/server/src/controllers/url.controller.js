@@ -11,8 +11,8 @@ export const getUrlShortcodeController = async (req, res) => {
   }
 
   if (
-    !url.startWith("http://") == false &&
-    !url.startWith("https://") == false
+    !url.startsWith("http://") == false &&
+    !url.startsWith("https://") == false
   ) {
     return res.status(400).json({
       error: "Please enter a valid URL start with http:// or https://",
