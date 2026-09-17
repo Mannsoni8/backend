@@ -47,9 +47,20 @@ const App = () => {
   }
 
   async function deleteUrl() {
-    await axios.delete(`http://localhost:5173/api/url/${id}`);
+    await axios.delete(`/http://localhost:5173/api/url${id}`);
 
     fetchUrls();
+  }
+
+  async function copyUrl(shortCode) {
+    const shortUrl = `http://localhost:5173/${shortCode}`;
+
+    try {
+      await navigator.clipboard.writeText(shortUrl);
+      alert("URL copied!");
+    } catch (error) {
+      console.error("Failed to copy URL:", error);
+    }
   }
 
   useEffect(() => {
@@ -87,7 +98,9 @@ const App = () => {
               <p className="truncate">{url.originalUrl}</p>
               <p>{url.clicks}</p>
               <div className="flex gap-2">
-                <button className="p-2 rounded bg-orange-600 text-white cursor-pointer">
+                <button
+                  onClick={() => copyUrl(url.shortCode)}
+                  className="p-2 rounded bg-orange-600 text-white cursor-pointer">
                   COPY
                 </button>
                 <button
