@@ -46,3 +46,8 @@ const refreshToken = createRefreshToken({
   userId: user._id,
   role: user.role,
 });
+
+res.cookie("refreshToken",refreshToken,{
+  httpOnly:true
+})
+
