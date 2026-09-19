@@ -26,3 +26,7 @@ export function createRefreshToken({ userId, role }) {
 
   return refreshToken;
 }
+
+export function readRefreshToken(refreshToken) {
+  return
+}

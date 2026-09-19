@@ -22,4 +22,10 @@ router.post("/register", registerValidator, registerController);
 
 router.post("/login",loginValidator);
 
+/**
+ * @POST /api/auth/refresh
+ */
+
+router.post("/refresh")
+
 export default router;

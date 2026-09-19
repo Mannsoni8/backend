@@ -1,6 +1,10 @@
 import userModel from "../models/user.model";
 import bcrypt from "bcryptjs";
-import { createAccessToken, createRefreshToken } from "../utils/auth.utils.js";
+import {
+  createAccessToken,
+  createRefreshToken,
+  readRefreshToken,
+} from "../utils/auth.utils.js";
 
 /**
  * @description Register an user and save the data from req.body
@@ -47,7 +51,108 @@ const refreshToken = createRefreshToken({
   role: user.role,
 });
 
-res.cookie("refreshToken",refreshToken,{
-  httpOnly:true
-})
+res.cookie("refreshToken", refreshToken, {
+  httpOnly: true,
+});
 
+/**
+ * @description Login a user and create new set of access token and refresh token
+ * @param req.body.email String
+ * @param req.body.password String
+ */
+
+export async function loginController(req, res) {
+  const { email, password } = req.body;
+
+  const user = await userModel.findOne({
+    email,
+  });
+
+  if (!user) {
+    return res.status(400).json({
+      message: "Invalid email or password",
+    });
+  }
+
+  const isPasswordVaild = await bcrypt.compare(password, user.passwordHash);
+
+  if (!isPasswordVaild) {
+    return res.status(400).json({
+      message: "Invalid email or password",
+    });
+  }
+
+  const accessToken = createAccessToken({
+    userId: user._id,
+    role: user.role,
+  });
+
+  const refreshToken = registerController({
+    userId: user._id,
+    role: user.role,
+  });
+
+  await userModel.findOneAndUpdate(
+    {
+      email,
+    },
+    {
+      refreshToken,
+    },
+  );
+
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+  });
+
+  res.status(200).json({
+    message: "User loggedIn successfully",
+    data: {
+      yser: {
+        id: user._id,
+        email: user.email,
+        password: user.password,
+      },
+    },
+  });
+}
+
+export async function refresh(req, res) {
+  const refreshToken = req.cookies.refreshToken;
+
+  if (!refreshToken) {
+    return res.status(401).json({
+      message: "Refresh token is required",
+    });
+  }
+  try {
+    const decoded = readRefreshToken(refreshToken);
+
+    const { userId, role } = decoded;
+
+    const user = await userModel.findById(userId);
+
+    if (refreshToken != user.refreshToken) {
+      await userModel.findByIdAndUpdate(user._id, {
+        refreshToken: null,
+        isAccountFreeze: true,
+      });
+
+      return res.status(401).json({
+        message: "missmatch refresh token",
+      });
+
+      const accessToken = createAccessToken({
+        userId,
+        role,
+      });
+
+      const newRefreshToken = createRefreshToken({
+        userId,
+        role,
+      });
+    }
+  } catch (error) {
+    return res.status(401);
+  }
+}
