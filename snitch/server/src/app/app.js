@@ -1,10 +1,10 @@
 import express from "express";
 import router from "../router/auth.route.js";
-import cookie from "cookie-parser";
+import cookieParser from "cookie-parser";
 
 const app = express();
 app.use(express.json());
-app.use(cookie());
+app.use(cookieParser());
 
 app.use("/api/auth", router);
 
