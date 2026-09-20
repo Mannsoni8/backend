@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { registerUserController } from "../controllers/auth.controller.js";
+import { registerValidators } from "../validators/auth.validator.js";
 
 const route = Router();
 
@@ -8,6 +9,6 @@ const route = Router();
  * req.body = {email,phone,password}
  */
 
-route.post("/rigister",registerUserController)
+route.post("/rigister", registerValidators, registerUserController);
 
 export default route;
