@@ -1,3 +1,5 @@
+import userModel from "../models/auth.model.js";
+
 export async function registerUserController(req, res) {
   const { email, phone, password } = req.body;
 
@@ -44,10 +46,32 @@ export async function registerUserController(req, res) {
 
   //   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
 
-  if(((password.trim()).length<6)){
+  if (password.trim().length < 6) {
     errors.push({
-        filed:"password",
-        message:"Password field must contain minimum 6 charcater"
-    })
+      filed: "password",
+      message: "Password field must contain minimum 6 charcater",
+    });
   }
+
+  if (errors.length > 0) {
+    return res.status(400).json({
+      message: "Invalid request",
+      errors,
+    });
+  }
+
+  const user = await userModel.create({
+    email,
+    phone,
+    password: password,
+  });
+
+  res.status(201).json({
+    message: "User register successfully",
+    data: {
+      email,
+      phone,
+      id: user._id,
+    },
+  });
 }
