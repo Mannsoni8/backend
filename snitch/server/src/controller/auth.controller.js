@@ -175,7 +175,7 @@ export async function refresh(req, res) {
       newRefreshToken,
     });
 
-    res.cookie("refreshToken", refreshToken, {
+    res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
     });
 
