@@ -169,6 +169,27 @@ export async function refresh(req, res) {
       userId,
       role,
     });
+
+    await userModel.findByIdAndUpdate(user._id, {
+      refreshToken,
+      newRefreshToken,
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+    });
+
+    res.status(200).json({
+      message: "Token roated successfully",
+      data: {
+        user: {
+          email: user.email,
+          name: user.name,
+          id: user._id,
+        },
+      },
+      accessToken,
+    });
   } catch (error) {
     return res.status(401).json({
       message: "Invalid refresh Token",
