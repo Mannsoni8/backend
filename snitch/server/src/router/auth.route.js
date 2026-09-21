@@ -5,6 +5,7 @@ import {
 } from "../validator/auth.validator.js";
 import {
   loginController,
+  refresh,
   registerController,
 } from "../controller/auth.controller.js";
 
@@ -32,6 +33,6 @@ router.post("/login", loginValidator, loginController);
  * @POST /api/auth/refresh
  */
 
-router.post("/refresh");
+router.post("/refresh", refresh);
 
 export default router;

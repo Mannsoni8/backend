@@ -39,7 +39,7 @@ export async function registerController(req, res) {
     name,
     passwordHash: await bcrypt.hash(password, 12),
   });
-   
+
   const accessToken = createAccessToken({
     userId: user._id,
     role: user.role,
@@ -54,9 +54,9 @@ export async function registerController(req, res) {
     httpOnly: true,
   });
 
-  await userModel.findByIdAndUpdate(user._id,{
-    refreshToken
-  })
+  await userModel.findByIdAndUpdate(user._id, {
+    refreshToken,
+  });
 
   res.status(201).json({
     message: "User Register successfully",
@@ -130,6 +130,7 @@ export async function loginController(req, res) {
         password: user.password,
       },
     },
+    accessToken,
   });
 }
 
@@ -157,18 +158,20 @@ export async function refresh(req, res) {
       return res.status(401).json({
         message: "missmatch refresh token",
       });
-
-      const accessToken = createAccessToken({
-        userId,
-        role,
-      });
-
-      const newRefreshToken = createRefreshToken({
-        userId,
-        role,
-      });
     }
+
+    const accessToken = createAccessToken({
+      userId,
+      role,
+    });
+
+    const newRefreshToken = createRefreshToken({
+      userId,
+      role,
+    });
   } catch (error) {
-    return res.status(401);
+    return res.status(401).json({
+      message: "Invalid refresh Token",
+    });
   }
 }
