@@ -28,5 +28,9 @@ export function createRefreshToken({ userId, role }) {
 }
 
 export function readRefreshToken(refreshToken) {
-  return jwt.verify(readRefreshToken, config.REFRESH_TOKEN);
+  return jwt.verify(refreshToken, config.REFRESH_TOKEN);
+}
+
+export function readAccessToken(accessToken) {
+  return jwt.verify(accessToken, config.ACCESS_TOKEN_SECRET);
 }

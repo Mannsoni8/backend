@@ -4,10 +4,12 @@ import {
   registerValidator,
 } from "../validator/auth.validator.js";
 import {
+  getMe,
   loginController,
   refresh,
   registerController,
 } from "../controller/auth.controller.js";
+import { authenticate } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
@@ -34,5 +36,11 @@ router.post("/login", loginValidator, loginController);
  */
 
 router.post("/refresh", refresh);
+
+/**
+ * @GET /api/me
+ */
+
+router.get("/me",authenticate,getMe);
 
 export default router;

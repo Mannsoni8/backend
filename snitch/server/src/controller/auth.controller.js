@@ -196,3 +196,7 @@ export async function refresh(req, res) {
     });
   }
 }
+
+export async function getMe(req,res) {
+  
+}
