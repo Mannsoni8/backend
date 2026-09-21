@@ -27,8 +27,8 @@ export async function registerController(req, res) {
       message: "User is already exists with this email",
       error: [
         {
-          fiels: "email",
-          message: "User is already exists with this email",
+          path: "email",
+          msg: "User is already exists with this email",
         },
       ],
     });
@@ -39,21 +39,37 @@ export async function registerController(req, res) {
     name,
     passwordHash: await bcrypt.hash(password, 12),
   });
+   
+  const accessToken = createAccessToken({
+    userId: user._id,
+    role: user.role,
+  });
+
+  const refreshToken = createRefreshToken({
+    userId: user._id,
+    role: user.role,
+  });
+
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+  });
+
+  await userModel.findByIdAndUpdate(user._id,{
+    refreshToken
+  })
+
+  res.status(201).json({
+    message: "User Register successfully",
+    data: {
+      user: {
+        email: user.eamil,
+        name: user.name,
+        id: user._id,
+      },
+      accessToken,
+    },
+  });
 }
-
-const accessToken = createAccessToken({
-  userId: user._id,
-  role: user.role,
-});
-
-const refreshToken = createRefreshToken({
-  userId: user._id,
-  role: user.role,
-});
-
-res.cookie("refreshToken", refreshToken, {
-  httpOnly: true,
-});
 
 /**
  * @description Login a user and create new set of access token and refresh token
