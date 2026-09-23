@@ -3,7 +3,12 @@ import { authenticate } from "../middleware/auth.middleware.js";
 import { createProduct } from "../controller/product.controller.js";
 import multer from "multer";
 
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 1 * 1024 * 1024,//1MB
+  },
+});
 
 const productRouter = Router();
 
