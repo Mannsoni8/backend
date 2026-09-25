@@ -1,12 +1,16 @@
 import { Router } from "express";
 import { authenticate } from "../middleware/auth.middleware.js";
-import { createProduct } from "../controller/product.controller.js";
+import {
+  createProduct,
+  listAllProducts,
+} from "../controller/product.controller.js";
 import multer from "multer";
+import { CreateProductValidator } from "../validator/product.validator.js";
 
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 1 * 1024 * 1024,//1MB
+    fileSize: 1 * 1024 * 1024, //1MB
   },
 });
 
@@ -36,7 +40,16 @@ Router.post(
     req.body.size = JSON.parse(req.body.size);
     next();
   },
+  CreateProductValidator,
   createProduct,
 );
+
+/**
+ * @method GET
+ * @route /api/product
+ * @description Read all the products from the DB
+ * @access user
+ */
+router.get("/", authenticate, listAllProducts);
 
 export default productRouter;

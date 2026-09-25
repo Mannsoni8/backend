@@ -5,6 +5,14 @@ const client = new ImageKit({
   privateKet: config.IMAGEKIT_PRIVATE_KEY,
 });
 
+/**
+ * @description Uploads a file to ImageKit
+ * @param {Object} param0
+ * @param {Buffer} param0.buffer - The file buffer to upload
+ * @param {string} param0.fileName - The name of the file to upload
+ * @returns {Promise<Object>} The response from ImageKit after uploading the file
+ */
+
 export async function uploadFile({ buffer, filename }) {
   const response = await client.files.upload({
     file: await toFile(buffer),
