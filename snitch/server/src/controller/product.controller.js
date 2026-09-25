@@ -17,6 +17,25 @@ export async function createProduct(req, res) {
     });
     fileUrls.push(responce.url);
   }
+
+  const product = await productModel.create({
+    title: req.body.title,
+    description: req.body.description,
+    price: {
+      amount: req.body.price.amount,
+      currency: req.body.price.currency,
+    },
+    sizes: req.body.sizes,
+    images: fileUrls,
+    seller: req.user.userId,
+  });
+
+  return res.status(201).json({
+    message: "Products created successfully",
+    data: {
+      product,
+    },
+  });
 }
 // non-handel  attack - ddos ,
 
