@@ -1,4 +1,7 @@
 import { Router } from "express";
+import { addToCardValidator } from "../validator/cart.validation.js";
+import { authenticate } from "../middleware/auth.middleware.js";
+import { addToCartController } from "../controller/cart.controller.js";
 
 const cartRouter = Router();
 
@@ -10,6 +13,6 @@ const cartRouter = Router();
  */
 // req.body = {productId,quantity,size}
 
-cartRouter.post("/");
+cartRouter.post("/",authenticate,addToCardValidator,addToCartController);
 
 export default cartRouter;
