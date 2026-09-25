@@ -12,7 +12,7 @@ export const CreateProductValidator = [
     .isLength({ min: 2, max: 100 })
     .withMessage("Title length must in betweein 2 to 100 character")
     .bail(),
-  isAlpha("en-US", { ignore: " " })
+  isAlpha("en-US", { ignore: " -" })
     .withMessage("Title can only be in English")
     .bail(),
   body("description")
