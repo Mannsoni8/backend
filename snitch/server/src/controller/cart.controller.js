@@ -34,48 +34,57 @@ export async function addToCartController(req, res) {
     (p) => p.product.toString() === productId,
   );
 
-  if (!productId.quantity + quantity > selectedSize) {
-    return res.status(400).jsoN({
-      message: "Insufficient stock",
+  if (productInCart) {
+    if (productInCart.quantity + quantity > selectedSize.stock) {
+      return res.status(400).json({
+        message: "Insufficient stock",
+      });
+    }
+
+    await cartModel.updateOne(
+      {
+        user: req.user.userId,
+        "products.product": productId,
+        "products.size": size,
+      },
+      {
+        $inc: {
+          "products.$.quantity": quantity,
+        },
+      },
+    );
+
+    return res.status(200).json({
+      message: "Product quantity updated in cart",
     });
   }
-
-  await cartModel.updateOne(
+  await cartModel.findOneAndUpdate(
+    { user: req.user.userId },
     {
-      user: req.user.userId,
-      "products.product": productId,
-      "products.size": size,
-    },
-    {
-      $inc: {
-        "products.$"
+      $push: {
+        products: {
+          product: productId,
+          quantity: quantity,
+          size: size,
+        },
       },
     },
   );
 
-  await cartModel.findOneAndUpdate({user:req.user.userId},
-    {
-        $push:{
-            products:{
-                product:productId,
-                quantity:productId,
-                quantity:quantity,
-
-            }
-        }
-    }
-  )
+  return res.status(200).json({
+    message: "Product added to cart",
+  });
 }
 
 export async function name(params) {
-    const cart =
-      (await cartModel.findOne({ user: req.user.userId })) ??
-      (await cartModel.create({ user: req.user.userId }));
+  const cart =
+    (await cartModel.findOne({ user: req.user.userId })) ??
+    (await cartModel.create({ user: req.user.userId }));
 
-    return res.status(200).json({
-        message:"Cart retrieved successfully",
-        data:{
-            cart:cart
-        }
-    })
+  return res.status(200).json({
+    message: "Cart retrieved successfully",
+    data: {
+      cart: cart,
+    },
+  });
 }
