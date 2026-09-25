@@ -60,9 +60,22 @@ export async function addToCartController(req, res) {
                 product:productId,
                 quantity:productId,
                 quantity:quantity,
-                
+
             }
         }
     }
   )
+}
+
+export async function name(params) {
+    const cart =
+      (await cartModel.findOne({ user: req.user.userId })) ??
+      (await cartModel.create({ user: req.user.userId }));
+
+    return res.status(200).json({
+        message:"Cart retrieved successfully",
+        data:{
+            cart:cart
+        }
+    })
 }
