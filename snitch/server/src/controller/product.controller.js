@@ -15,7 +15,7 @@ export async function createProduct(req, res) {
       buffer: req.files[i].buffer,
       filename: req.files[i].originalname,
     });
-    console.log(responce);
+    fileUrls.push(responce.url);
   }
 }
 // non-handel  attack - ddos ,
