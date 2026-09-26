@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { authenticate } from "../middleware/auth.middleware.js";
+import {
+  authenticate,
+  authenticateSeller,
+} from "../middleware/auth.middleware.js";
 import {
   createProduct,
   listAllProducts,
@@ -26,14 +29,7 @@ const productRouter = Router();
 productRouter.post(
   "/",
   authenticate,
-  (req, res, next) => {
-    if (req.user.role != "seller") {
-      return res.status(403).json({
-        message: "user is not authorize to create products",
-      });
-    }
-    next();
-  },
+  authenticateSeller,
   upload.array("images"),
   (req, res, next) => {
     req.body.price = JSON.parse(req.body.price);
@@ -59,12 +55,6 @@ productRouter.get("/", authenticate, listAllProducts);
  * @access seller
  */
 
-productRouter.patch("/unlist/:id", authenticate, (req, res, next) => {
-  if (req.user.role !== "seller") {
-    return res.status(403).json({
-      message: "Forbidden access, only a seller can unlist the products",
-    });
-  }
-});
+productRouter.patch("/unlist/:id", authenticate, authenticateSeller);
 
 export default productRouter;
