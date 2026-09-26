@@ -23,7 +23,7 @@ const productRouter = Router();
  * req.body=>{title,description:price:{amount,currency},size:[{size,stock}]
  */
 
-Router.post(
+productRouter.post(
   "/",
   authenticate,
   (req, res, next) => {
@@ -50,6 +50,21 @@ Router.post(
  * @description Read all the products from the DB
  * @access user
  */
-router.get("/", authenticate, listAllProducts);
+productRouter.get("/", authenticate, listAllProducts);
+
+/**
+ * @method PATCH
+ * @route /api/product/unlist/:id
+ * @description Unlist a product by id
+ * @access seller
+ */
+
+productRouter.patch("/unlist/:id", authenticate, (req, res, next) => {
+  if (req.user.role !== "seller") {
+    return res.status(403).json({
+      message: "Forbidden access, only a seller can unlist the products",
+    });
+  }
+});
 
 export default productRouter;

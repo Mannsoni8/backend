@@ -21,3 +21,11 @@ export function authenticate(req, res, next) {
     });
   }
 }
+
+export function authenticateSeller(req, res) {
+  if (req.user.role !== "seller") {
+    return res.status(403).json({
+      message: "Forbidden access, only a seller can unlist the products",
+    });
+  }
+}
