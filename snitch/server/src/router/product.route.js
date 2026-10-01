@@ -8,7 +8,10 @@ import {
   listAllProducts,
 } from "../controller/product.controller.js";
 import multer from "multer";
-import { CreateProductValidator } from "../validator/product.validator.js";
+import {
+  CreateProductValidator,
+  unlistProductValidator,
+} from "../validator/product.validator.js";
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -55,6 +58,11 @@ productRouter.get("/", authenticate, listAllProducts);
  * @access seller
  */
 
-productRouter.patch("/unlist/:id", authenticate, authenticateSeller);
+productRouter.patch(
+  "/unlist/:id",
+  authenticate,
+  authenticateSeller,
+  unlistProductValidator,
+);
 
 export default productRouter;
