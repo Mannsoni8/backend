@@ -9,5 +9,9 @@ export default function initializedSocket(httpServer) {
     socket.on("disconnect", () => {
       console.log("A user is disconnected", socket.id);
     });
+
+    socket.on("elon", () => {
+      console.log("Elon event recived");
+    });
   });
 }
