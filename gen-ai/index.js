@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import rl from "readline/promises";
 import { tool, createAgent, context } from "langchain";
 import * as z from "zod";
-import { START, StateGraph } from "@langchain/langgraph";
+import { START, StateGraph, END } from "@langchain/langgraph";
 dotenv.config();
 
 const events = [];
@@ -110,7 +110,7 @@ async function LLMNode(state) {
 
 const graph = new StateGraph(
   z.object({
-    messages: z.array,
+    messages: z.array(z.any()),
   }),
 )
   .addNode("LLMNode", LLMNode)
