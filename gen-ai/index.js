@@ -113,9 +113,10 @@ const graph = new StateGraph(
     messages: z.array,
   }),
 )
-  .addNode(LLMNode)
-  .addEdge(START, LLMNode)
-  .addEdge(LLMNode, END);
+  .addNode("LLMNode", LLMNode)
+  .addEdge(START, "LLMNode")
+  .addEdge("LLMNode", END)
+  .compile();
 
 const graphResult = await graph.invoke({
   messages: [
