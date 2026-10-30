@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import rl from "readline/promises";
 import { tool, createAgent, context } from "langchain";
 import * as z from "zod";
+import { START, StateGraph } from "@langchain/langgraph";
 dotenv.config();
 
 const events = [];
@@ -52,10 +53,10 @@ const model = new ChatGroq({
   apiKey: process.env.GROQ_API_KEY,
 });
 
-const agent = createAgent({
-  model,
-  tools: [createEventTool, getEventsTool],
-});
+// const agent = createAgent({
+//   model,
+//   tools: [createEventTool, getEventsTool],
+// });
 
 // while (true) {
 //   const userInput = await readLine.question("Enter your input: ");
@@ -80,15 +81,49 @@ const agent = createAgent({
 //   process.stdout.write("/n");
 // }
 
-const userInput = await readLine.question("Enter your input: ");
+// const userInput = await readLine.question("Enter your input: ");
 
-const response = await agent.invoke({
+// const response = await agent.invoke({
+//   messages: [
+//     {
+//       role: "human",
+//       content: userInput,
+//     },
+//   ],
+// });
+
+// console.log(response);
+
+//---------LLM langgraph-------------//
+async function LLMNode(state) {
+  console.log("LLMNode state: ", state);
+  return {
+    messages: [
+      ...state.messages,
+      {
+        role: "assistent",
+        content: "Hello, user!",
+      },
+    ],
+  };
+}
+
+const graph = new StateGraph(
+  z.object({
+    messages: z.array,
+  }),
+)
+  .addNode(LLMNode)
+  .addEdge(START, LLMNode)
+  .addEdge(LLMNode, END);
+
+const graphResult = await graph.invoke({
   messages: [
     {
       role: "human",
-      content: userInput,
+      content: "Hello",
     },
   ],
 });
 
-console.log(response);
+console.log("graph res: ", graphResult);
