@@ -1,7 +1,7 @@
 import { ChatGroq } from "@langchain/groq";
 import dotenv from "dotenv";
 import rl from "readline/promises";
-import { tool, createAgent } from "langchain";
+import { tool, createAgent, context } from "langchain";
 import * as z from "zod";
 dotenv.config();
 
@@ -57,25 +57,38 @@ const agent = createAgent({
   tools: [createEventTool, getEventsTool],
 });
 
-while (true) {
-  const userInput = await readLine.question("Enter your input: ");
+// while (true) {
+//   const userInput = await readLine.question("Enter your input: ");
 
-  const stream = await agent.stream(
-    {
-      messages: [
-        {
-          role: "human",
-          content: userInput,
-        },
-      ],
-    },
-    {
-      streamMode: "messages",
-    },
-  );
+//   const stream = await agent.stream(
+//     {
+//       messages: [
+//         {
+//           role: "human",
+//           content: userInput,
+//         },
+//       ],
+//     },
+//     {
+//       streamMode: "messages",
+//     },
+//   );
 
-  for await (const [chunk] of stream) {
-    process.stdout.write(chunk.content);
-  }
-  process.stdout.write("/n");
-}
+//   for await (const [chunk] of stream) {
+//     process.stdout.write(chunk.content);
+//   }
+//   process.stdout.write("/n");
+// }
+
+const userInput = await readLine.question("Enter your input: ");
+
+const response = await agent.invoke({
+  messages: [
+    {
+      role: "human",
+      content: userInput,
+    },
+  ],
+});
+
+console.log(response);
