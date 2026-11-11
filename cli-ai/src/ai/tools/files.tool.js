@@ -1,35 +1,18 @@
 import { tool } from "langchain";
 import * as z from "zod";
 import fs from "fs/promises";
-import path from "path";
 
-function resolveWorkspacePath(filePath) {
-  const workspaceRoot = path.resolve(process.cwd());
-  const resolved = path.resolve(workspaceRoot, filePath);
-  const relative = path.relative(workspaceRoot, resolved);
-
-  if (relative.startsWith("..") || path.isAbsolute(relative)) {
-    throw new Error(`Refusing to write outside workspace: ${filePath}`);
-  }
-
-  return resolved;
-}
-
-export const createFilesTool = tool(
+/**
+ * Create/Update multiple files at once (create one if not existed)
+ */
+export const upsertFiles = tool(
   async function ({ files }) {
-    const results = await Promise.all(
+    await Promise.all(
       files.map(async (file) => {
-        try {
-          const targetPath = resolveWorkspacePath(file.path);
-          await fs.mkdir(path.dirname(targetPath), { recursive: true });
-          await fs.writeFile(targetPath, file.content, "utf-8");
-          return `Wrote ${targetPath}`;
-        } catch (error) {
-          return `Failed ${file.path}: ${error.message}`;
-        }
+        return await fs.writeFile(file.path, file.content);
       }),
     );
-    return results.join("\n");
+    return "file created successfully";
   },
   {
     name: "upsertFiles",
@@ -40,10 +23,67 @@ export const createFilesTool = tool(
         z.object({
           path: z
             .string()
-            .describe("path of the file to be created/updated inside workspace"),
+            .describe("absolute path of the file to be created/update"),
           content: z
             .string()
-            .describe("content of the file to be created/updated"),
+            .describe("content of the file to be created/update"),
+        }),
+      ),
+    }),
+  },
+);
+
+/**
+ * List all the folder (recursively) and files in the current folder (ignore folders like node_modules)
+ */
+export const listFiles = tool(
+  async function ({ folder }) {
+    const results = [];
+    async function traverse(currentFolder) {
+      const entries = await fs.readdir(currentFolder, { withFileTypes: true });
+      for (const entry of entries) {
+        const fullPath = `${currentFolder}/${entry.name}`;
+        if (entry.isDirectory()) {
+          if (entry.name === "node_modules") continue;
+          await traverse(fullPath);
+        } else {
+          results.push(fullPath);
+        }
+      }
+    }
+    await traverse(folder);
+    return JSON.stringify(results);
+  },
+  {
+    name: "listFiles",
+    description:
+      "List all the folder (recursively) and files in the current folder (ignore folders like node_modules)",
+    schema: z.object({
+      folder: z.string().describe("absolute path of the folder to list"),
+    }),
+  },
+);
+
+/**
+ * Read the content of multiple files at once
+ */
+export const readFiles = tool(
+  async function ({ files }) {
+    const results = await Promise.all(
+      files.map(async (file) => {
+        const content = await fs.readFile(file.path, "utf-8");
+        return { path: file.path, content };
+      }),
+    );
+    return JSON.stringify(results);
+  },
+  {
+    name: "readFiles",
+    description: "Read the content of multiple files at once",
+    schema: z.object({
+      files: z.array(
+        z.object({
+          path: z.string().describe("absolute path of the file to be read"),
         }),
       ),
     }),
