@@ -1,8 +1,10 @@
 import { StateGraph, START, END } from "@langchain/langgraph";
 import * as z from "zod";
-import { HumanMessage, SystemMessage } from "langchain";
-import rl from "readline";
-import { LLMNode } from "./node";
+import { context, HumanMessage, SystemMessage } from "langchain";
+import rl from "../../utils/readline.js";
+import { LLMNode } from "./node.js";
+
+console.log(process.cwd());
 
 const stateFormate = z.object({
   messages: z.array(z.any()),
@@ -27,13 +29,17 @@ export default async function initGraph() {
   ];
 
   while (true) {
-    const userInput = rl.question("[User]: ");
+    const userInput = await rl.question("[User]: ");
 
+    if (userInput.toLowerCase() === "/bye") {
+      break;
+    }
     messages.push(new HumanMessage(userInput));
 
-    const response = await graph.invoke({
-      messages,
-    });
+    const response = await graph.invoke(
+      { messages },
+      { context: { username: "Mann" } },
+    );
 
     messages = response.messages;
   }

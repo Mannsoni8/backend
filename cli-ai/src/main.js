@@ -1,12 +1,13 @@
 import initGraph from "./ai/graph/graph.js";
+import { getApiKey, getSettingFile, saveApiKey } from "./utils/file.utils.js";
 import rl from "./utils/readline.js";
 
 async function main() {
-  const settings = await getSettingsFile();
+  const settings = await getSettingFile();
 
   if (!settings.apiKey) {
     const apiKey = await rl.question("Please enter your API key: ");
-    await saveApiKey(apiKey);
+    await saveApiKeyF(apiKey);
   }
 
   const response = await getApiKey();

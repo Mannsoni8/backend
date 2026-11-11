@@ -4,9 +4,11 @@ import { AIMessage } from "langchain";
 
 export async function LLMNode(state) {
   const model = new ChatGroq({
-    model: "",
+    model: "openai/gpt-oss-120b",
     apiKey: (await getApiKey()).apiKey,
   });
+
+  const modelWithTool = model.bindTools([upsertFileTools]);
 
   const stream = await model.stream(state.messages);
 
