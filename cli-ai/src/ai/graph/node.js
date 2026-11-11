@@ -22,13 +22,22 @@ export async function LLMNode(state, config) {
   const stream = await modelWithTool.stream(state.messages);
 
   let aiMessage = null;
+  let printedPrefix = false;
+
   for await (const chunk of stream) {
-    process.stdout.write(chunk.text);
-    if (!aiMessage) aiMessage = chunk;
-    else aiMessage = aiMessage.concat(chunk);
+    if (chunk.text) {
+      if (!printedPrefix) {
+        process.stdout.write("[AI]: ");
+        printedPrefix = true;
+      }
+      process.stdout.write(chunk.text);
+    }
+    aiMessage = aiMessage ? aiMessage.concat(chunk) : chunk;
   }
 
-  process.stdout.write("\n");
+  if (printedPrefix) {
+    process.stdout.write("\n");
+  }
 
   return {
     messages: [...state.messages, aiMessage],
