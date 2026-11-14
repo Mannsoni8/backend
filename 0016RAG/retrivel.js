@@ -1,0 +1,1 @@
+const userInput = "Tell me about Arav's intership"
